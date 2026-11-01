@@ -1,0 +1,30 @@
+{
+  "name": "kalkulator-ikan",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -n api,web -c blue,green \"npm:dev:api\" \"npm:dev:web\"",
+    "dev:web": "vite",
+    "dev:api": "node --watch --env-file-if-exists=.env server/index.js",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "node --env-file-if-exists=.env server/index.js",
+    "db:init": "node --env-file-if-exists=.env server/scripts/init-db.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^5.3.0",
+    "lucide-react": "^1.66.0",
+    "pg": "^8.23.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.3",
+    "@vitejs/plugin-react": "^6.1.2",
+    "concurrently": "^10.0.6",
+    "tailwindcss": "^4.3.3",
+    "vite": "^8.3.5"
+  }
+}
