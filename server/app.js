@@ -22,9 +22,24 @@ app.use(express.json({ limit: '100kb' }));
 
 const api = express.Router();
 
+// Petunjuk diagnosis koneksi database. Hanya kode error, tanpa data rahasia.
+function databaseHint(err) {
+  if (!process.env.DATABASE_URL) return 'DATABASE_URL belum diatur di environment.';
+  if (err.code === '28P01') return 'Password database salah.';
+  if (err.code === 'ENOTFOUND') return 'Alamat host database tidak ditemukan.';
+  if (err.code === 'ECONNREFUSED') return 'Koneksi ditolak. Periksa host dan port.';
+  if (/ssl/i.test(err.message)) return 'Masalah SSL. Pastikan DATABASE_SSL=true.';
+  return 'Gagal terhubung ke database.';
+}
+
 api.get('/health', async (_req, res) => {
-  await pool.query('SELECT 1');
-  res.json({ ok: true });
+  try {
+    await pool.query('SELECT 1');
+    res.json({ ok: true });
+  } catch (err) {
+    console.error(err);
+    res.status(503).json({ ok: false, code: err.code ?? null, hint: databaseHint(err) });
+  }
 });
 
 // ---------- Pemasok ----------
